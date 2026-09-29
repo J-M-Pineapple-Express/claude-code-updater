@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'">
+  <title>Claude Code Updater</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Claude Code Updater</h1>
+      <p id="where" class="muted">Looking for Claude Code…</p>
+    </div>
+    <div class="versions">
+      <div><span class="label">Installed</span><span id="installed" class="ver">…</span></div>
+      <div><span class="label">Latest</span><span id="latest" class="ver">…</span></div>
+    </div>
+  </header>
+
+  <main>
+    <section id="news" class="card">
+      <div class="card-head">
+        <h2 id="news-title">What's new</h2>
+        <div class="tabs" id="tabs" hidden>
+          <button id="tab-summary" class="tab active" type="button">Summary</button>
+          <button id="tab-raw" class="tab" type="button">Release notes</button>
+        </div>
+      </div>
+      <div id="news-body" class="md"><p class="muted">Checking GitHub for releases…</p></div>
+    </section>
+
+    <section id="log-card" class="card" hidden>
+      <div class="card-head"><h2>Update log</h2></div>
+      <pre id="log"></pre>
+    </section>
+  </main>
+
+  <footer>
+    <label id="close-row" hidden>
+      <input type="checkbox" id="close-sessions" checked>
+      <span id="close-text"></span>
+    </label>
+    <div class="actions">
+      <button id="refresh" type="button" class="secondary">Check again</button>
+      <button id="update" type="button" disabled>Update</button>
+    </div>
+  </footer>
+
+  <script src="md.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
