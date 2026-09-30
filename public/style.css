@@ -61,6 +61,15 @@ h2 { margin: 0; font-size: 15px; font-weight: 620; }
   border-radius: 6px; padding: 3px 10px; font: inherit; font-size: 12px; cursor: pointer;
 }
 .tab.active { color: var(--text); background: var(--code); }
+.head-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+#past-toggle { font-weight: 400; }
+
+.past-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 4px 0 8px; font-size: 12.5px; }
+.past-bar select {
+  font: inherit; color: var(--text); background: var(--code); border: 1px solid var(--border);
+  border-radius: 6px; padding: 3px 6px;
+}
+.summarize-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 6px 0; }
 
 .md h2, .md h3, .md h4 { font-size: 14px; margin: 14px 0 4px; }
 .md p { margin: 6px 0; }

@@ -11,7 +11,7 @@ const https = require('https');
 const IS_WIN = process.platform === 'win32';
 const IS_MAC = process.platform === 'darwin';
 const HOME = os.homedir();
-const RELEASES_URL = 'https://api.github.com/repos/anthropics/claude-code/releases?per_page=60';
+const RELEASES_URL = 'https://api.github.com/repos/anthropics/claude-code/releases?per_page=100';
 const PROMPT_FILE = path.join(__dirname, 'skill', 'review-changelog.md');
 
 // ---------- small helpers ----------
@@ -166,7 +166,8 @@ function fetchJson(url) {
   });
 }
 
-// Releases newer than `installed`, newest first. With no installed version, just the latest.
+// Releases newer than `installed`, newest first (with no installed version, just the
+// latest), plus `all` recent releases for looking back at past changelogs.
 async function getReleases(installed) {
   const all = (await fetchJson(RELEASES_URL))
     .filter((r) => !r.draft && !r.prerelease)
@@ -175,21 +176,28 @@ async function getReleases(installed) {
     .sort((a, b) => cmpVersion(b.version, a.version));
   const latest = all[0] || null;
   const newer = installed ? all.filter((r) => cmpVersion(r.version, installed) > 0) : all.slice(0, 1);
-  return { latest, newer };
+  return { latest, newer, all };
 }
 
 // ---------- changelog summary (the bundled review-changelog skill) ----------
 
-function buildPrompt(releases, installed) {
+const MAX_SUMMARY_RELEASES = 20;
+
+// `lookback`: the releases are ones they already have (browsing past changelogs), so the
+// summary is about what's there to use now rather than what to expect from an update.
+function buildPrompt(releases, installed, { lookback = false } = {}) {
   const skill = fs.readFileSync(PROMPT_FILE, 'utf8');
   const platform = IS_MAC ? 'macOS' : IS_WIN ? 'Windows' : process.platform;
-  const notes = releases.slice(0, 20).map((r) => `## v${r.version} (${r.date})\n${r.notes}`).join('\n\n');
-  return `${skill}\n\n---\n\nThis machine runs ${platform}. Installed version: ${installed ? 'v' + installed : 'unknown'}.\n\nRelease notes to summarize:\n\n${notes}`;
+  const notes = releases.slice(0, MAX_SUMMARY_RELEASES).map((r) => `## v${r.version} (${r.date})\n${r.notes}`).join('\n\n');
+  const mode = lookback
+    ? '\n\nThey have already updated past all of these releases and are looking back at what changed. Frame it as what they can use now and what got fixed, not as what to expect before updating.'
+    : '';
+  return `${skill}\n\n---\n\nThis machine runs ${platform}. Installed version: ${installed ? 'v' + installed : 'unknown'}.${mode}\n\nRelease notes to summarize:\n\n${notes}`;
 }
 
 // Runs the user's own Claude Code headless. The prompt goes in on stdin because release
 // notes easily exceed the Windows command-line limit.
-function summarize(claudePath, releases, installed, { timeoutMs = 240000 } = {}) {
+function summarize(claudePath, releases, installed, { timeoutMs = 240000, lookback = false } = {}) {
   return new Promise(async (resolve, reject) => {
     const env = envWithPath(await userPath());
     const isCmd = IS_WIN && claudePath.toLowerCase().endsWith('.cmd');
@@ -208,7 +216,7 @@ function summarize(claudePath, releases, installed, { timeoutMs = 240000 } = {})
       if (code === 0 && out.trim()) resolve(out.trim());
       else reject(new Error((err || out || `claude exited with code ${code}`).trim().slice(0, 500)));
     });
-    child.stdin.end(buildPrompt(releases, installed));
+    child.stdin.end(buildPrompt(releases, installed, { lookback }));
   });
 }
 
@@ -324,7 +332,7 @@ async function runUpdate({ latest, closeSessions, dryRun = false }, log) {
   return after;
 }
 
-module.exports = { getStatus, getReleases, summarize, runUpdate, cmpVersion, parseVersion, buildPrompt };
+module.exports = { getStatus, getReleases, summarize, runUpdate, cmpVersion, parseVersion, buildPrompt, MAX_SUMMARY_RELEASES };
 
 // ---------- CLI for testing ----------
 if (require.main === module) {

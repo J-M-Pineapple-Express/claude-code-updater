@@ -50,11 +50,17 @@ ipcMain.handle('status', () => core.getStatus());
 
 ipcMain.handle('releases', (_e, installed) => core.getReleases(installed));
 
-ipcMain.handle('summary', async (_e, { claudePath, installed, releases, force }) => {
-  const key = `${installed || 'none'}->${releases[0] && releases[0].version}`;
+// `lookback` summarizes a range of past releases the user picked; `peek` only returns
+// a cached summary, so browsing past releases never spends usage until they ask.
+ipcMain.handle('summary', async (_e, { claudePath, installed, releases, force, lookback, peek }) => {
+  const newest = releases[0] && releases[0].version;
+  const key = lookback
+    ? `past:${releases[releases.length - 1].version}->${newest}`
+    : `${installed || 'none'}->${newest}`;
   const cache = readCache();
   if (!force && cache[key]) return { text: cache[key], cached: true };
-  const text = await core.summarize(claudePath, releases, installed);
+  if (peek) return null;
+  const text = await core.summarize(claudePath, releases, installed, { lookback });
   cache[key] = text;
   writeCache(cache);
   return { text, cached: false };

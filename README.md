@@ -9,6 +9,8 @@ When you open it, it:
 3. Has **your own Claude Code** read the release notes and summarize what matters to a daily terminal user. That's the bundled *review changelog* prompt in [`skill/review-changelog.md`](skill/review-changelog.md), run through `claude -p` with Sonnet. The raw release notes are one tab over, and they're what you get if the summary fails.
 4. Updates when you click **Update**.
 
+Already up to date? **Past releases** lets you look back at earlier changelogs: pick how far back to go, read the release notes, or ask Claude for a summary of that range.
+
 It only runs when you open it. Nothing runs in the background.
 
 ---

@@ -1,6 +1,6 @@
 {
   "name": "claude-code-updater",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Desktop app that shows a plain-English summary of what's new in Claude Code, then updates it. Windows + macOS.",
   "main": "electron-main.js",
   "author": "AfterRealm",

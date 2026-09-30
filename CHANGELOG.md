@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.1.0 — 2026-09-30
+
+### Added
+- **Past releases.** Look back at earlier Claude Code changelogs even when you're already up to date. Pick a starting version from the last 100 releases; the release notes show right away, and **Summarize with Claude** writes a plain-English look back (what you can use now and what got fixed). Summaries only run when you ask and are cached per range.
+
 ## v1.0.0 — 2026-09-29
 
 First release.

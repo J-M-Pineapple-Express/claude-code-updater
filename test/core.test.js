@@ -12,4 +12,9 @@ const prompt = core.buildPrompt([{ version: '2.1.284', date: '2026-09-28', notes
 assert.ok(prompt.includes('# Review Changelog'), 'bundled skill is included');
 assert.ok(prompt.includes('Installed version: v2.1.282'));
 assert.ok(prompt.includes('## v2.1.284 (2026-09-28)'));
+assert.ok(!prompt.includes('looking back'), 'update view is not framed as a look back');
+const past = core.buildPrompt([{ version: '2.1.280', date: '2026-09-22', notes: '- Old thing' }], '2.1.284', { lookback: true });
+assert.ok(past.includes('looking back'), 'past-release summaries are framed as a look back');
+const many = Array.from({ length: 30 }, (_, i) => ({ version: `2.1.${300 - i}`, date: '', notes: '' }));
+assert.strictEqual((core.buildPrompt(many, null).match(/^## v/gm) || []).length, core.MAX_SUMMARY_RELEASES);
 console.log('core tests passed');

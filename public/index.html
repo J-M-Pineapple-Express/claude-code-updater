@@ -22,10 +22,18 @@
     <section id="news" class="card">
       <div class="card-head">
         <h2 id="news-title">What's new</h2>
-        <div class="tabs" id="tabs" hidden>
-          <button id="tab-summary" class="tab active" type="button">Summary</button>
-          <button id="tab-raw" class="tab" type="button">Release notes</button>
+        <div class="head-right">
+          <div class="tabs" id="tabs" hidden>
+            <button id="tab-summary" class="tab active" type="button">Summary</button>
+            <button id="tab-raw" class="tab" type="button">Release notes</button>
+          </div>
+          <button id="past-toggle" class="tab" type="button" hidden>Past releases</button>
         </div>
+      </div>
+      <div id="past-bar" class="past-bar" hidden>
+        <label for="past-from">Show releases since</label>
+        <select id="past-from"></select>
+        <span id="past-count" class="muted small"></span>
       </div>
       <div id="news-body" class="md"><p class="muted">Checking GitHub for releases…</p></div>
     </section>
