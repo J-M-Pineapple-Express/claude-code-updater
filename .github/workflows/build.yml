@@ -51,6 +51,7 @@ jobs:
             dist/*.dmg
             dist/*.zip
             dist/*.blockmap
+            dist/latest*.yml
           if-no-files-found: ignore
 
   release:
@@ -65,8 +66,11 @@ jobs:
       - name: Move all installers into one folder
         run: |
           mkdir release
-          find artifacts -type f \( -name "*.exe" -o -name "*.dmg" -o -name "*.zip" -o -name "*.blockmap" \) -exec mv {} release/ \;
+          find artifacts -type f \( -name "*.exe" -o -name "*.dmg" -o -name "*.zip" -o -name "*.blockmap" -o -name "latest*.yml" \) -exec mv {} release/ \;
           ls -lah release
+          for f in latest.yml latest-mac.yml; do
+            [ -f "release/$f" ] || { echo "::error::$f missing, auto-update would break"; exit 1; }
+          done
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
