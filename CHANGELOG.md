@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.1.1 — 2026-10-10
+
+### Fixed
+- **Auto-update works on both platforms.** Every release now ships `latest.yml` (Windows) and `latest-mac.yml` (macOS), the files the app reads to find updates. v1.0.0 had only the Mac file and v1.1.0 only the Windows one. The release build now fails if either is missing.
+- **No more duplicate draft releases.** The build no longer publishes its own extra draft alongside the real release.
+
 ## v1.1.0 — 2026-09-30
 
 ### Added
